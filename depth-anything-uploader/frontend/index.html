@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>動画深度アップローダー</title>
+</head>
+<body>
+  <h2>動画をアップロードしてください</h2>
+  <form id="uploadForm">
+    <input type="file" name="video" accept="video/*" required />
+    <button type="submit">アップロード</button>
+  </form>
+  <div id="status"></div>
+
+  <script>
+    const form = document.getElementById("uploadForm");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const file = form.querySelector("input[name='video']").files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      status.textContent = "処理中です...";
+
+      const res = await fetch("/upload", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      status.innerHTML = `<a href="${data.download_url}" download>処理された動画をダウンロード</a>`;
+    });
+  </script>
+</body>
+</html>
